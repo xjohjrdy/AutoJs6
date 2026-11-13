@@ -42,6 +42,7 @@ import org.autojs.autojs.ui.BaseActivity
 import org.autojs.autojs.ui.doc.DocumentationFragment
 import org.autojs.autojs.ui.explorer.ExplorerView
 import org.autojs.autojs.ui.explorer.ExplorerViewStateLifecyclePolicy
+import org.autojs.autojs.ui.floating.FloatyStartupShow
 import org.autojs.autojs.ui.floating.FloatyWindowManger
 import org.autojs.autojs.ui.log.LogActivity
 import org.autojs.autojs.ui.main.drawer.DrawerFragment.Companion.Event.OnDrawerClosed
@@ -194,6 +195,9 @@ class MainActivity : BaseActivity(), DelegateHost, HostActivity {
         }
 
         FloatyWindowManger.refreshCircularMenuIfNeeded(this)
+        // Every launch shows the floating menu, so the automation tools are one tap away.
+        // zh-CN: 每次启动都显示悬浮菜单, 使自动化工具触手可及.
+        FloatyStartupShow.onHomeShown(this, savedInstanceState)
 
         // No permission is requested on startup: a welcome snackbar offers the setup wizards
         // until the user answers it, later launches only remind of missing permissions.
@@ -206,6 +210,9 @@ class MainActivity : BaseActivity(), DelegateHost, HostActivity {
         super.onNewIntent(intent)
         setIntent(intent)
         threeStoveAgentGuide?.handleForegroundRequest(intent)
+        // A launcher tap reuses this singleTask instance instead of creating it again.
+        // zh-CN: 桌面图标点击会复用该 singleTask 实例, 而非重新创建.
+        FloatyStartupShow.onHomeShown(this, null)
     }
 
     override fun onPostResume() {
